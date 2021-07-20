@@ -1,1 +1,1 @@
-# <p align="center">Samsung</p>
+# <img src="test/1280px-Samsung_Logo.svg.png" align="center"></img>
