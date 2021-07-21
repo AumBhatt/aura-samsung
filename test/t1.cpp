@@ -17,12 +17,14 @@
 #include <exception>
 #include <sstream>
 
+// ws://{host}:{port}/api/v2/channels/samsung.remote.control?name={name}
+
 int main() {
 
-    std::string url = "ws://echo.websocket.org";
+    std::string url = "ws://" + "host:port" + "/api/v2/channels/samsung.remote.control?name=" + "namekk";
 
     Poco::URI uri(url);
-    Poco::Net::HTTPClientSession clientSession(uri.getHost());
+    Poco::Net::HTTPClientSession clientSession(uri.getHost(), uri.getPort());
 
     std::string path(uri.getPathAndQuery());
     if(path.empty()) {

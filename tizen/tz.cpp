@@ -20,6 +20,7 @@
 namespace SamsungTizen {
     std::string encodeBase64(std::string);
     std::string generateRequestBody(std::string);
+    std::string pocoWebSocket(std::string, std::string, std::string);
 };
 
 std::string SamsungTizen::encodeBase64(std::string in) {
@@ -47,6 +48,45 @@ std::string SamsungTizen::generateRequestBody(std::string command) {
     return payload;
 }
 
-int main() {
-    std::cout << SamsungTizen::generateRequestBody("hi") << std::endl;
+std::string SamsungTizen::pocoWebSocket(std::string ip_addr, std::string samsungRemoteControlName, std::string commandKey) {
+    
+    std::string url = "wss://" + ip_addr + "/api/v2/channels/samsung.remote.control?name=" + samsungRemoteControlName;
+    std::string urlTest = "wss://echo.websocket.org";
+
+    Poco::URI uri(urlTest);
+    Poco::Net::HTTPClientSession clientSession(uri.getHost());
+
+    std::string path(uri.getPathAndQuery());
+    if(path.empty()) {
+        path = '/';
+    }
+
+    Poco::Net::HTTPRequest req(Poco::Net::HTTPRequest::HTTP_GET, path, Poco::Net::HTTPMessage::HTTP_1_1);
+
+    Poco::Net::HTTPResponse res;
+
+    try {
+        Poco::Net::WebSocket *wbsock =  new Poco::Net::WebSocket(clientSession, req, res);
+        char const *message = commandKey.c_str();
+        char receiveBuff[256];
+
+        int sentLength = wbsock->sendFrame(message, strlen(message), Poco::Net::WebSocket::FRAME_TEXT);
+        std::cout << "Sent bytes " << sentLength << std::endl;
+        int flags = 0;
+
+        int recLength = wbsock->receiveFrame(receiveBuff, 256, flags);
+        std::cout << "Received bytes " << recLength << std::endl;
+        std::cout << "Received Message: " << receiveBuff << std::endl;
+
+        wbsock->close();
+    }
+    catch(std::exception &e) {
+        std::cout<<"\nException: "<<e.what()<<"\n";
+    }
+    return "";
+}
+
+int main(int argc, const char **args) {
+    SamsungTizen::pocoWebSocket(args[1], "samXYZ", "KEY_UP");
+    return 0;
 }
