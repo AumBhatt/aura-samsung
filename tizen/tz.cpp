@@ -50,10 +50,10 @@ std::string SamsungTizen::generateRequestBody(std::string command) {
 
 std::string SamsungTizen::pocoWebSocket(std::string ip_addr, std::string samsungRemoteControlName, std::string commandKey) {
     
-    std::string url = "wss://" + ip_addr + "/api/v2/channels/samsung.remote.control?name=" + samsungRemoteControlName;
+    std::string url = "ws://" + ip_addr + ":8001/api/v2/channels/samsung.remote.control?name=" + samsungRemoteControlName;
     std::string urlTest = "wss://echo.websocket.org";
 
-    Poco::URI uri(urlTest);
+    Poco::URI uri(url);
     Poco::Net::HTTPClientSession clientSession(uri.getHost());
 
     std::string path(uri.getPathAndQuery());
