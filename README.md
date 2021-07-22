@@ -7,7 +7,7 @@
 g++ -o tz tz.cpp -lPocoNet -lPocoUtil -lPocoFoundation
 ```
 ##### Program Run
-`Note: Only ip of the TV needed. Port is set to 8001 as given in references.`
+`Note: Only ip of the TV needed. Port is already set to 8001 as given in references.`
 ```bash
 ./tz <ip-address>
 ```
