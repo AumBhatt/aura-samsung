@@ -1,12 +1,8 @@
-// Poco Libraries
-#include <Poco/Net/HTTPClientSession.h>
-#include <Poco/Net/HTTPRequest.h>
-#include <Poco/Net/HTTPResponse.h>
-#include <Poco/Net/WebSocket.h>
-#include <Poco/StreamCopier.h>
-#include <Poco/Path.h>
-#include <Poco/URI.h>
-#include <Poco/Exception.h>
+// Boost Libraries
+#include <boost/beast/core.hpp>
+#include <boost/beast/websocket.hpp>
+#include <boost/asio/connect.hpp>
+#include <boost/asio/ip/tcp.hpp>
 // RapidJSON Libraries
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
@@ -20,7 +16,8 @@
 namespace SamsungTizen {
     std::string encodeBase64(std::string);
     std::string generateRequestBody(std::string);
-    std::string pocoWebSocket(std::string, std::string, std::string);
+    //std::string boostWebSocket(const char**, std::string, std::string);
+    int boostWebSocket(const char**);
 };
 
 std::string SamsungTizen::encodeBase64(std::string in) {
@@ -48,46 +45,87 @@ std::string SamsungTizen::generateRequestBody(std::string command) {
     return payload;
 }
 
-std::string SamsungTizen::pocoWebSocket(std::string ip_addr, std::string samsungRemoteControlName, std::string commandKey) {
-    
-    std::string url = "ws://" + ip_addr + "/api/v2/channels/samsung.remote.control?name=" + SamsungTizen::encodeBase64(samsungRemoteControlName);
-    std::string urlTest = "wss://echo.websocket.org";
+int SamsungTizen::boostWebSocket(const char **argv) {
+    try
+    {
+        // Check command line arguments.
+/*         if(argc != 4)
+        {
+            std::cerr <<
+                "Usage: websocket-client-sync <host> <port> <text>\n" <<
+                "Example:\n" <<
+                "    websocket-client-sync echo.websocket.org 80 \"Hello, world!\"\n";
+            //return EXIT_FAILURE;
+        } */
+        std::string host = argv[1];
+        auto const port = argv[2];
+        std::string samsungRemoteControlName = argv[3];
+        auto const text = argv[4];
 
-    Poco::URI uri(url);
-    std::cout << uri.toString() << std::endl;
-    Poco::Net::HTTPClientSession clientSession(uri.getHost());
+        // The io_context is required for all I/O
+        boost::asio::io_context ioc;
 
-    std::string path(uri.getPathAndQuery());
-    if(path.empty()) {
-        path = '/';
+        // These objects perform our I/O
+        boost::asio::ip::tcp::resolver resolver{ioc};
+        boost::beast::websocket::stream<boost::asio::ip::tcp::socket> ws{ioc};
+
+        // Look up the domain name
+        auto const results = resolver.resolve(host, port);
+
+        // Make the connection on the IP address we get from a lookup
+        auto ep = boost::asio::connect(ws.next_layer(), results);
+
+        // Update the host_ string. This will provide the value of the
+        // Host HTTP header during the WebSocket handshake.
+        // See https://tools.ietf.org/html/rfc7230#section-5.4
+        host += ':' + std::to_string(ep.port());
+
+        // Set a decorator to change the User-Agent of the handshake
+        ws.set_option(boost::beast::websocket::stream_base::decorator(
+            [](boost::beast::websocket::request_type& req)
+            {
+                req.set(boost::beast::http::field::user_agent,
+                    std::string(BOOST_BEAST_VERSION_STRING) +
+                        " websocket-client-coro");
+            }));
+
+        // Perform the websocket handshake
+        ws.handshake(host, "/api/v2/channels/samsung.remote.control?name=" + SamsungTizen::encodeBase64(samsungRemoteControlName));
+//    std::string url = "ws://" + ip_addr + "/api/v2/channels/samsung.remote.control?name=" + SamsungTizen::encodeBase64(samsungRemoteControlName);
+
+
+        // Send the message
+        ws.write(boost::asio::buffer(std::string(text)));
+
+        // This buffer will hold the incoming message
+        boost::beast::flat_buffer buffer;
+
+        // Read a message into our buffer
+        ws.read(buffer);
+
+        // Close the WebSocket connection
+        ws.close(boost::beast::websocket::close_code::normal);
+
+        // If we get here then the connection is closed gracefully
+
+        // The make_printable() function helps print a ConstBufferSequence
+        std::cout << boost::beast::make_printable(buffer.data()) << std::endl;
     }
-
-    Poco::Net::HTTPRequest req(Poco::Net::HTTPRequest::HTTP_GET, path, Poco::Net::HTTPMessage::HTTP_1_1);
-
-    Poco::Net::HTTPResponse res;
-
-    try {
-        Poco::Net::WebSocket *wbsock =  new Poco::Net::WebSocket(clientSession, req, res);
-        char const *message = commandKey.c_str();
-        char receiveBuff[256];
-
-        int sentLength = wbsock->sendFrame(message, strlen(message), Poco::Net::WebSocket::FRAME_TEXT);
-        std::cout << "Sent bytes " << sentLength << std::endl;
-        int flags = 0;
-
-        int recLength = wbsock->receiveFrame(receiveBuff, 256, flags);
-        std::cout << "Received bytes " << recLength << std::endl;
-        std::cout << "Received Message: " << receiveBuff << std::endl;
-
-        wbsock->close();
+    catch(std::exception const& e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return EXIT_FAILURE;
     }
-    catch(std::exception &e) {
-        std::cout<<"\nException: "<<e.what()<<"\n";
-    }
-    return "";
+    return EXIT_SUCCESS;
 }
 
 int main(int argc, const char **args) {
-    SamsungTizen::pocoWebSocket(args[1], "samXYZ", "KEY_UP");
+    if(argc != 5) {
+        std::cerr <<
+            "Usage:\n ./tz <host> <port> <Remote-Control-Name> <Samsung-Command-Key>\n";
+        //return EXIT_FAILURE;
+    }
+    else
+        SamsungTizen::boostWebSocket(args);
     return 0;
 }

@@ -1,4 +1,4 @@
-const myPort = 3000;
+const myPort = 8001;
 
 
 const WebSocket = require('ws');
@@ -10,7 +10,7 @@ if(WebSocketServer) {
 }
 
 WebSocketServer.on("connection", (client) => {
-    console.log("New Client Connected");
+    console.log("Client Connected");
 
     client.on("message", (msg) => {
         console.log(`Client Says: ${msg}`);
@@ -29,11 +29,9 @@ const server = http.createServer();
 
 server.on('upgrade', function upgrade(request, socket, head) {
     const pathname = request.url;
-  
-    if (pathname === '/') {
-      WebSocketServer.handleUpgrade(request, socket, head, function done(WebSocket) {
-        WebSocketServer.emit('connection', WebSocket, request);
-      });
-    }
+    console.log("ClientPath: " + pathname);
+    WebSocketServer.handleUpgrade(request, socket, head, function done(WebSocket) {
+      WebSocketServer.emit('connection', WebSocket, request);
+    });
   });
 server.listen(myPort);
