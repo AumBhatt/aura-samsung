@@ -1,7 +1,8 @@
 const myPort = 3000;
 
+
 const WebSocket = require('ws');
-const WebSocketServer = new WebSocket.Server( { port: myPort } );
+const WebSocketServer = new WebSocket.Server( { noServer: true } );
 console.clear();
 
 if(WebSocketServer) {
@@ -16,5 +17,23 @@ WebSocketServer.on("connection", (client) => {
         client.send(`Server Says: ${msg}`);
     });
 
+    client.on("close", (client) => {
+        console.log("Client Disconnected");
+    });
+
 
 });
+
+const http = require('http');
+const server = http.createServer();
+
+server.on('upgrade', function upgrade(request, socket, head) {
+    const pathname = request.url;
+  
+    if (pathname === '/') {
+      WebSocketServer.handleUpgrade(request, socket, head, function done(WebSocket) {
+        WebSocketServer.emit('connection', WebSocket, request);
+      });
+    }
+  });
+server.listen(myPort);
