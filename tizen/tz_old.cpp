@@ -1,3 +1,15 @@
+// Poco Libraries
+#include <Poco/Net/HTTPClientSession.h>
+#include <Poco/Net/HTTPRequest.h>
+#include <Poco/Net/HTTPResponse.h>
+#include <Poco/StreamCopier.h>
+#include <Poco/DOM/Document.h>
+#include <Poco/DOM/DOMParser.h>
+#include <Poco/DOM/Element.h>
+#include <Poco/Path.h>
+#include <Poco/URI.h>
+#include <Poco/Exception.h>
+#include <Poco/Net/WebSocket.h>
 // RapidJSON Libraries
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
@@ -39,7 +51,7 @@ std::string SamsungTizen::generateRequestBody(std::string command) {
     return payload;
 }
 
-/* std::string SamsungTizen::pocoWebSocket(std::string ip_addr, std::string samsungRemoteControlName, std::string commandKey) {
+std::string SamsungTizen::pocoWebSocket(std::string ip_addr, std::string samsungRemoteControlName, std::string commandKey) {
     
     std::string url = "ws://" + ip_addr + "/api/v2/channels/samsung.remote.control?name=" + SamsungTizen::encodeBase64(samsungRemoteControlName);
     std::string urlTest = "wss://echo.websocket.org";
@@ -76,9 +88,9 @@ std::string SamsungTizen::generateRequestBody(std::string command) {
         std::cout<<"\nException: "<<e.what()<<"\n";
     }
     return "";
-} */
+}
 
 int main(int argc, const char **args) {
-    //SamsungTizen::pocoWebSocket(args[1], "samXYZ", "KEY_UP");
+    SamsungTizen::pocoWebSocket(args[1], "samXYZ", "KEY_UP");
     return 0;
 }
