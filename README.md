@@ -1,7 +1,8 @@
 # <p align="center"><img width="250" src="test/1280px-Samsung_Logo.svg.png"/></p>
 
 ###### <p align="center">`**This is not the final code.`</p>
-## 1. Tizen → `tizen/tizen.cpp`
+## 1. Tizen
+###### file → `tizen/tz.cpp`
 ##### Compilation
 ```bash
 g++ -o tz tz.cpp -lpthread
