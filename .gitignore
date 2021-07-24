@@ -1,4 +1,5 @@
 .vscode
-tz
+.
+!*.cpp
 server/*
-test/*.png
+*.png
