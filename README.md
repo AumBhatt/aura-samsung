@@ -3,11 +3,11 @@
 ###### <p align="center">`**This is not the final code.`</p>
 ## 1. Tizen
 ###### file → `tizen/tz.cpp`
-##### Compilation
+##### Compilation:
 ```bash
 g++ -o tz tz.cpp -lpthread
 ```
-##### Program Run
+##### Program Usage:
 `Note: Only ip of the TV needed. Port is already set to 8001 as given in references.`
 ```bash
 ./tz <host> <port> <remote-name> <command>
