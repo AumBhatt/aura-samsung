@@ -9,7 +9,7 @@ g++ -o tz tz.cpp -lpthread
 ##### Program Run
 `Note: Only ip of the TV needed. Port is already set to 8001 as given in references.`
 ```bash
-./tz <ip-address>
+./tz <host> <port> <remote-name> <command>
 ```
 ###### References:
 >Legacy OS: https://github.com/enen92/flask-samsung <br>
