@@ -1,3 +1,4 @@
 .vscode
 tz
 server/*
+test/*.png
