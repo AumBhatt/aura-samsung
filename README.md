@@ -1,10 +1,10 @@
 # <p align="center"><img width="250" src="test/1280px-Samsung_Logo.svg.png"/></p>
 
 ###### <p align="center">`**This is not the final code.`</p>
-## 1. Tizen
+## 1. Tizen → `tizen/tizen.cpp`
 ##### Compilation
 ```bash
-g++ -o tz tz.cpp -lPocoNet -lPocoUtil -lPocoFoundation
+g++ -o tz tz.cpp -lpthread
 ```
 ##### Program Run
 `Note: Only ip of the TV needed. Port is already set to 8001 as given in references.`
