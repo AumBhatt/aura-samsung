@@ -8,7 +8,7 @@
 g++ -o tz tz.cpp -lpthread
 ```
 ##### Program Usage:
-###### `Note: PORT = 8001 -> Already set....`
+#### `Note: PORT = 8001 -> Already set....`
 ```bash
 ./tz <host> <remote-name> <command>
 ```
