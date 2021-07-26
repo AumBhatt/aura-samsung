@@ -16,14 +16,13 @@
 namespace SamsungTizen {
     std::string encodeBase64(std::string);
     std::string generateRequestBody(std::string);
-    //std::string boostWebSocket(const char**, std::string, std::string);
-    int boostWebSocket(const char**);
+    std::string boostWebSocket(const char**);
 };
 
 std::string SamsungTizen::encodeBase64(std::string in) {
     
     const std::string b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    std::string out;
+    std::string out = "";
     int val=0, valb=-6;
 
     for (unsigned char c : in) {
@@ -45,7 +44,7 @@ std::string SamsungTizen::generateRequestBody(std::string command) {
     return payload;
 }
 
-int SamsungTizen::boostWebSocket(const char **argv) {
+std::string SamsungTizen::boostWebSocket(const char **argv) {
     try
     {
         std::string host = argv[1];
@@ -81,29 +80,29 @@ int SamsungTizen::boostWebSocket(const char **argv) {
 
         boost::beast::flat_buffer buffer;
         ws.read(buffer);
-        std::cout << boost::beast::make_printable(buffer.data()) << std::endl;
         
+        // std::cout << boost::beast::make_printable(buffer.data()) << std::endl;
+        
+
         sleep(1.5);
         // Close the WebSocket connection
         ws.close(boost::beast::websocket::close_code::normal);
-
+        return boost::beast::buffers_to_string(buffer.data());
 
     }
     catch(std::exception const& e)
     {
         std::cerr << "Error: " << e.what() << std::endl;
-        return EXIT_FAILURE;
+        return "";
     }
-    return EXIT_SUCCESS;
 }
 
 int main(int argc, const char **args) {
     if(argc != 4) {
         std::cerr <<
-            "Usage:\n ./tz <host> <Remote-Control-Name> <Samsung-Command-Key>\n Port is set to 8001.\n";
-        //return EXIT_FAILURE;
+            "Usage:\n Port is set to 8001.\n ./tz <host> <Remote-Control-Name> <Samsung-Command-Key>\n";
     }
     else
-        SamsungTizen::boostWebSocket(args);
+        std::cout << SamsungTizen::boostWebSocket(args) << std::endl;
     return 0;
 }

@@ -10,8 +10,8 @@ if(WebSocketServer) {
 }
 
 WebSocketServer.on("connection", (client) => {
-    //console.log("Client Connected");
     client.send(`{"event":"ms.channel.connect"}`);
+    console.log("Client Connected");
     client.on("message", (msg) => {
         console.log(`Client Says: ${msg}`);
     });
