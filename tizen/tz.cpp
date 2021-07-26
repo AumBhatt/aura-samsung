@@ -63,13 +63,6 @@ std::string SamsungTizen::boostWebSocket(const char **argv) {
 
         host += ':' + std::to_string(ep.port());
 
-        ws.set_option(boost::beast::websocket::stream_base::decorator(
-            [](boost::beast::websocket::request_type& req)
-            {
-                req.set(boost::beast::http::field::user_agent,
-                    std::string(BOOST_BEAST_VERSION_STRING) +
-                        " websocket-client-coro");
-            }));
 
         // Perform the websocket handshake
         //url = "ws://" + ip_addr + "/api/v2/channels/samsung.remote.control?name=" + SamsungTizen::encodeBase64(samsungRemoteControlName);
