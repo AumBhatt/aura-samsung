@@ -3,3 +3,4 @@ tz_old
 !*.cpp
 server/*
 *.png
+dataP.txt
