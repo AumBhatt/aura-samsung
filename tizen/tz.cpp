@@ -40,7 +40,7 @@ std::string SamsungTizen::encodeBase64(std::string in) {
 }
 
 std::string SamsungTizen::generateRequestBody(std::string command) {
-    std::string payload = "{'method': 'ms.remote.control', 'params': {'Cmd': 'Click', 'DataOfCmd': '" + command + "', 'Option': 'false', 'TypeOfRemote': 'SendRemoteKey'}}";
+    std::string payload = "{'method': 'ms.channel.control', 'params': {'Cmd': 'Click', 'DataOfCmd': '" + command + "', 'Option': 'false', 'TypeOfRemote': 'SendRemoteKey'}}";
     return payload;
 }
 
@@ -70,10 +70,10 @@ std::string SamsungTizen::boostWebSocket(const char **argv) {
         ws.handshake(host, "/api/v2/channels/samsung.remote.control?name=" + SamsungTizen::encodeBase64(samsungRemoteControlName));
 
         // Send the message
-        ws.write(boost::asio::buffer(std::string(text)));
 
         boost::beast::flat_buffer buffer;
         ws.read(buffer);
+        ws.write(boost::asio::buffer(std::string(text)));
         
         // std::cout << boost::beast::make_printable(buffer.data()) << std::endl;
         
