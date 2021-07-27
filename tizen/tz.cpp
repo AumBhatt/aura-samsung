@@ -40,7 +40,7 @@ std::string SamsungTizen::encodeBase64(std::string in) {
 }
 
 std::string SamsungTizen::generateRequestBody(std::string command) {
-    std::string payload = "{'method': 'ms.remote.control', 'params': {'Cmd': 'Click', 'DataOfCmd': '" + command + "', 'Option': 'false', 'TypeOfRemote': 'SendRemoteKey'}}";
+    std::string payload = "{\"method\": \"ms.remote.control\", \"params\": {\"Cmd\": \"Click\", \"DataOfCmd\": \"" + command + "\", \"Option\": \"false\", \"TypeOfRemote\": \"SendRemoteKey\"}}";
     return payload;
 }
 
@@ -74,6 +74,7 @@ std::string SamsungTizen::boostWebSocket(const char **argv) {
         boost::beast::flat_buffer buffer;
         ws.read(buffer);
         ws.write(boost::asio::buffer(std::string(text)));
+	std::cout << std::endl << text <<std::endl;
         
         // std::cout << boost::beast::make_printable(buffer.data()) << std::endl;
         
