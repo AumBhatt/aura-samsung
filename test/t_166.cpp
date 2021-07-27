@@ -1,6 +1,7 @@
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/websocket.hpp>
+#include <boost/asio.hpp>
 #include <cstdlib>
 #include <iostream>
 #include <string>
