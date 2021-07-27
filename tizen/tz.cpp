@@ -40,7 +40,7 @@ std::string SamsungTizen::encodeBase64(std::string in) {
 }
 
 std::string SamsungTizen::generateRequestBody(std::string command) {
-    std::string payload = "{'method': 'ms.channel.control', 'params': {'Cmd': 'Click', 'DataOfCmd': '" + command + "', 'Option': 'false', 'TypeOfRemote': 'SendRemoteKey'}}";
+    std::string payload = "{'method': 'ms.remote.control', 'params': {'Cmd': 'Click', 'DataOfCmd': '" + command + "', 'Option': 'false', 'TypeOfRemote': 'SendRemoteKey'}}";
     return payload;
 }
 
