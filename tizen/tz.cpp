@@ -16,14 +16,13 @@
 namespace SamsungTizen {
     std::string encodeBase64(std::string);
     std::string generateRequestBody(std::string);
-    //std::string boostWebSocket(const char**, std::string, std::string);
-    int boostWebSocket(const char**);
+    std::string boostWebSocket(const char**);
 };
 
 std::string SamsungTizen::encodeBase64(std::string in) {
     
     const std::string b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    std::string out;
+    std::string out = "";
     int val=0, valb=-6;
 
     for (unsigned char c : in) {
@@ -41,17 +40,17 @@ std::string SamsungTizen::encodeBase64(std::string in) {
 }
 
 std::string SamsungTizen::generateRequestBody(std::string command) {
-    std::string payload = "{'method': 'ms.control.control', 'params': {'Cmd': 'Click', 'DataOfCmd': '" + command + "', 'Option': 'false', 'TypeOfRemote': 'SendRemoteKey'}}";
+    std::string payload = "{'method': 'ms.remote.control', 'params': {'Cmd': 'Click', 'DataOfCmd': '" + command + "', 'Option': 'false', 'TypeOfRemote': 'SendRemoteKey'}}";
     return payload;
 }
 
-int SamsungTizen::boostWebSocket(const char **argv) {
+std::string SamsungTizen::boostWebSocket(const char **argv) {
     try
     {
         std::string host = argv[1];
-        auto const port = argv[2];
-        std::string samsungRemoteControlName = argv[3];
-        auto const text = argv[4];
+        auto const port = "8001";
+        std::string samsungRemoteControlName = argv[2];
+        auto const text = SamsungTizen::generateRequestBody(argv[3]);
 
         boost::asio::io_context ioc;
 
@@ -64,49 +63,39 @@ int SamsungTizen::boostWebSocket(const char **argv) {
 
         host += ':' + std::to_string(ep.port());
 
-        ws.set_option(boost::beast::websocket::stream_base::decorator(
-            [](boost::beast::websocket::request_type& req)
-            {
-                req.set(boost::beast::http::field::user_agent,
-                    std::string(BOOST_BEAST_VERSION_STRING) +
-                        " websocket-client-coro");
-            }));
 
         // Perform the websocket handshake
+        //url = "ws://" + ip_addr + "/api/v2/channels/samsung.remote.control?name=" + SamsungTizen::encodeBase64(samsungRemoteControlName);
         ws.handshake(host, "/api/v2/channels/samsung.remote.control?name=" + SamsungTizen::encodeBase64(samsungRemoteControlName));
-//    std::string url = "ws://" + ip_addr + "/api/v2/channels/samsung.remote.control?name=" + SamsungTizen::encodeBase64(samsungRemoteControlName);
-
 
         // Send the message
         ws.write(boost::asio::buffer(std::string(text)));
 
-        // This buffer will hold the incoming message
         boost::beast::flat_buffer buffer;
-
-        // Read a message into our buffer
         ws.read(buffer);
+        
+        // std::cout << boost::beast::make_printable(buffer.data()) << std::endl;
+        
 
+        sleep(1.5);
         // Close the WebSocket connection
         ws.close(boost::beast::websocket::close_code::normal);
+        return boost::beast::buffers_to_string(buffer.data());
 
-
-        std::cout << boost::beast::make_printable(buffer.data()) << std::endl;
     }
     catch(std::exception const& e)
     {
         std::cerr << "Error: " << e.what() << std::endl;
-        return EXIT_FAILURE;
+        return "";
     }
-    return EXIT_SUCCESS;
 }
 
 int main(int argc, const char **args) {
-    if(argc != 5) {
+    if(argc != 4) {
         std::cerr <<
-            "Usage:\n ./tz <host> <port> <Remote-Control-Name> <Samsung-Command-Key>\n";
-        //return EXIT_FAILURE;
+            "Usage:\n Port is set to 8001.\n ./tz <host> <Remote-Control-Name> <Samsung-Command-Key>\n";
     }
     else
-        SamsungTizen::boostWebSocket(args);
+        std::cout << SamsungTizen::boostWebSocket(args) << std::endl;
     return 0;
 }

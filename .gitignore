@@ -1,5 +1,7 @@
 .vscode
-.
+tz_old
 !*.cpp
 server/*
+aum/*
 *.png
+dataP.txt
