@@ -1,5 +1,0 @@
-LFLAGS = \
-# 	--sysroot=$(SYSROOT_DIR) \
-# 	-Wl,-rpath-link,$(SYSROOT_DIR)/opt/vc/lib \
-# 	-Wl,-rpath-link,$(SYSROOT_DIR)/usr/lib/arm-linux-gnueabihf \
-# 	-Wl,-rpath-link,$(SYSROOT_DIR)/lib/arm-linux-gnueabihf
