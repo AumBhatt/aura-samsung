@@ -15,8 +15,8 @@ g++ -o tz tz.cpp -lpthread
 ###### References:
 Main: https://github.com/Ape/samsungctl <br>
 > Legacy OS:
-> ###### 1 https://github.com/enen92/flask-samsung
-> ###### 2 http://sc0ty.pl/2012/02/samsung-tv-network-remote-control-protocol/ 
-> ###### 3 https://gist.github.com/danielfaust/998441
+> ###### 1] https://github.com/enen92/flask-samsung
+> ###### 2] http://sc0ty.pl/2012/02/samsung-tv-network-remote-control-protocol/ 
+> ###### 3] https://gist.github.com/danielfaust/998441
 > Tizen OS:
-> ###### 1 https://github.com/vrachieru/samsung-tv-api
+> ###### 1] https://github.com/vrachieru/samsung-tv-api
