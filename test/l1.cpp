@@ -10,7 +10,7 @@
 #define REMOTE_IP "192.168.0.77"
 #define REMOTE_MAC ""
 #define REMOTE_NAME "Aura-Samsung"
-#define APP_NAME "C++"
+#define APP_NAME "Aura-Gateway"
 #define TV "LE32C650" // TV Model No.
 
 #define temp_host "127.0.0.1"
@@ -20,7 +20,8 @@
 
 namespace SamsungLegacy {
     std::string encodeBase64(std::string);
-    std::vector<std::string> generateRequestBody(std::string);
+    std::vector<std::string> generateRequestBody(std::string, std::string, std::string);
+    int sendCommandOverSocket(std::vector<std::string>, std::string, std::string);
 };
 
 std::string SamsungLegacy::encodeBase64(std::string in) {
@@ -43,10 +44,10 @@ std::string SamsungLegacy::encodeBase64(std::string in) {
 
 }
 
-std::vector<std::string> generateRequestBody(std::string command, std::string remote_ip = REMOTE_IP, std::string remote_mac = REMOTE_MAC) {
+std::vector<std::string> SamsungLegacy::generateRequestBody(std::string command, std::string remote_ip = REMOTE_IP, std::string remote_mac = REMOTE_MAC) {
     std::string src_64 = SamsungLegacy::encodeBase64(remote_ip);
     std::string mac_64 = SamsungLegacy::encodeBase64(remote_mac);
-    std::string remote_64 = REMOTE_NAME;
+    std::string remote_64 = SamsungLegacy::encodeBase64(REMOTE_NAME);
     std::string app = APP_NAME;
 
     std::string command_64 = SamsungLegacy::encodeBase64(command);
@@ -60,7 +61,7 @@ std::vector<std::string> generateRequestBody(std::string command, std::string re
     
     std::string auth_pkt =
         std::string(1, char(0x00)) + \
-        std::string( { char(app.length()), char(0x00), app } ) + \
+        std::string( { char(app.length()), char(0x00) } ) + app + \
         std::string( { char(auth_msg.length()), char(0x00) } ) + auth_msg;
     
     std::string cmd_msg =
@@ -73,13 +74,18 @@ std::vector<std::string> generateRequestBody(std::string command, std::string re
         std::string( { char(cmd_msg.length()), char(0x00) } ) + cmd_msg;
     
     std::vector<std::string> request;
-    ret.push_back(auth_pkt);
-    ret.push_back(cmd_pkt);
+    request.push_back(auth_pkt);
+    request.push_back(cmd_pkt);
 
     return request;
 }
 
+int sendCommandOverSocket(std::vector<std::string> payload, std::string host_ip = HOST_IP, std::string host_port = HOST_PORT) {}
 
 int main(int argc, char **argv) {
+    std::vector<std::string> v = SamsungLegacy::generateRequestBody("KEY_VOLUP", temp_host, temp_mac);
+    for(std::string i : v) {
+        std::cout << i <<std::endl;
+    }
     return 0;
 }
