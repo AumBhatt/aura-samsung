@@ -12,12 +12,14 @@ g++ -o tz tz.cpp -lpthread
 ```bash
 ./tz <host> <remote-name> <command>
 ```
-###### References:
-> Main: https://github.com/Ape/samsungctl
-><br>
+###### References:<br>
+> ---------------
+>>> Main: https://github.com/Ape/samsungctl
+> ---------------
 > Legacy OS:
-> - https://github.com/enen92/flask-samsung
-> - http://sc0ty.pl/2012/02/samsung-tv-network-remote-control-protocol/ 
-> <br>
+>> https://github.com/enen92/flask-samsung
+>> http://sc0ty.pl/2012/02/samsung-tv-network-remote-control-protocol/ 
+>> https://gist.github.com/danielfaust/998441
+> ---------------
 > Tizen OS:
-> - https://github.com/vrachieru/samsung-tv-api
+> https://github.com/vrachieru/samsung-tv-api
