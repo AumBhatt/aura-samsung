@@ -113,6 +113,7 @@ int SamsungLegacy::sendCommandOverSocket(std::vector<std::string> payload, std::
     }
     sleep(0.25);
     socket.close();
+    socket.~basic_stream_socket();
     return 0;
 }
 
