@@ -21,7 +21,7 @@
 
 namespace SamsungLegacy {
     std::string encodeBase64(std::string);
-    std::vector<std::string> generateRequestBody(std::string command, std::string remote_ip, std::string remote_mac);
+    std::vector<std::string> generateRequestBody(std::string command, std::string remote_ip, std::string remote_mac, std::string tv_model);
     int sendCommandOverSocket(std::vector<std::string> payload, std::string host_ip, int host_port);
 };
 
@@ -45,14 +45,14 @@ std::string SamsungLegacy::encodeBase64(std::string in) {
 
 }
 
-std::vector<std::string> SamsungLegacy::generateRequestBody(std::string command, std::string remote_ip = temp_remote_ip, std::string remote_mac = temp_remote_mac) {
+std::vector<std::string> SamsungLegacy::generateRequestBody(std::string command, std::string remote_ip = temp_remote_ip, std::string remote_mac = temp_remote_mac, std::string tv_model = TV) {
     std::string src_64 = SamsungLegacy::encodeBase64(remote_ip);
     std::string mac_64 = SamsungLegacy::encodeBase64(remote_mac);
     std::string remote_64 = SamsungLegacy::encodeBase64(REMOTE_NAME);
     std::string app = APP_NAME;
 
     std::string command_64 = SamsungLegacy::encodeBase64(command);
-    std::string tv = TV;
+    std::string tv = tv_model;
 
 // Form authentication packet
     std::string auth_msg =
@@ -117,9 +117,30 @@ int SamsungLegacy::sendCommandOverSocket(std::vector<std::string> payload, std::
 }
 
 int main(int argc, char **argv) {
-    std::vector<std::string> v = SamsungLegacy::generateRequestBody("KEY_VOLUP");
+/*     std::vector<std::string> v = SamsungLegacy::generateRequestBody("KEY_VOLUP");
     if(!v.empty()) {
         SamsungLegacy::sendCommandOverSocket(v);
-    }
+    } */
+
+    /*
+    argv[] =
+        1: host_ip
+        2: host_port
+        3: model
+        4: remote_ip
+        5: remote_mac
+        6: command
+    */
+
+   if(argc == 7) {
+       std::vector<std::string> payload = SamsungLegacy::generateRequestBody(argv[6], argv[4], argv[5], argv[3]);
+       if(!payload.empty()) {
+           std::cout << std::endl << SamsungLegacy::sendCommandOverSocket(payload, argv[1], std::stoi(argv[2])) << std::endl;
+       }
+   }
+   else {
+       std::cout << "Usage:\n  ";
+       std::cout << argv[0] << " <host_ip> <host_port> <tv_model> <remote_ip> <remote_mac> <command>" << std::endl;
+   }
     return 0;
 }
