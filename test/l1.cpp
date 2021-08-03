@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
    if(argc == 7) {
        std::vector<std::string> payload = SamsungLegacy::generateRequestBody(argv[6], argv[4], argv[5], argv[3]);
        if(!payload.empty()) {
-           std::cout << std::endl << SamsungLegacy::sendCommandOverSocket(payload, argv[1], std::stoi(argv[2])) << std::endl;
+           SamsungLegacy::sendCommandOverSocket(payload, argv[1], std::stoi(argv[2]));
        }
    }
    else {
