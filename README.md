@@ -13,6 +13,7 @@ g++ -o tz tz.cpp -lpthread
 ```bash
 ./tz <host> <remote-name> <command>
 ```
+Test server: ```server/server_ws.js``` (written in Node.js)
 ## 2. Legacy
 ###### file → `legacy/lgy.cpp`
 ##### Compilation:
@@ -28,6 +29,7 @@ Note:
 ```bash
 ./lgy <host_ip> <host_port> <tv_model> <remote_ip> <remote_mac> <command>
 ```
+Test server: ```server/server_lgy.js``` (written in Python 3)
 ###### References:
 Main: https://github.com/Ape/samsungctl <br>
 > Legacy OS:
